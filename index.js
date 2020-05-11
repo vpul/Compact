@@ -2,8 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const createError = require('http-errors');
+const connectToMongodb = require('./config/mongodbConnection');
 
 const app = express();
+connectToMongodb();
 
 app.use(cors());
 app.use(express.json());
@@ -19,7 +21,6 @@ app.use((err, req, res, next) => {
     error: err.message || 'Internal Server Error',
   });
 });
-
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
