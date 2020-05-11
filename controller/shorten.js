@@ -1,29 +1,38 @@
 const createError = require('http-errors');
 const Url = require('../models/url');
 
+const createWithAlias = async ({ alias, url }) => {
+  const recordWithAlias = await Url.findById(alias);
+  if (recordWithAlias) {
+    if (recordWithAlias.fullUrl === url) {
+      return recordWithAlias;
+    }
+    return createError(
+      400,
+      `Alias ${alias} is unavailable. Please choose another one.`,
+    );
+  }
+  const result = await Url.create({
+    _id: alias,
+    fullUrl: url,
+  });
+  return result;
+};
+
 module.exports = async (req, res, next) => {
   let result;
   try {
-    if (req.body.customAlias) {
+    if (req.body.alias) {
       // for custom alias
-      const recordExistsWithAlias = await Url.findById(req.body.id);
-      if (recordExistsWithAlias) {
-        return next(
-          createError(
-            400,
-            `Alias ${req.body.id} is unavailable. Please choose another one.`,
-          ),
-        );
-      }
-      result = await Url.create(req.body);
+      result = await createWithAlias(req.body);
     } else {
-      const recordExistsWithSameURL = await Url.findOne({
-        fullUrl: req.body.fullUrl.toLowerCase(),
+      const recordWithURL = await Url.findOne({
+        fullUrl: req.body.url.toLowerCase(),
       });
-      if (recordExistsWithSameURL) {
-        result = recordExistsWithSameURL;
+      if (recordWithURL) {
+        result = recordWithURL;
       } else {
-        result = await Url.create(req.body);
+        result = await Url.create({ fullUrl: req.body.url });
       }
     }
 
