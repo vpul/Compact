@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const createError = require('http-errors');
+// const createError = require('http-errors');
 const connectToMongodb = require('./config/mongodbConnection');
 const routes = require('./routes');
 
@@ -15,9 +15,9 @@ app.get('/', (req, res) => res.send('API is up & running!'));
 
 app.use(routes);
 
-app.use((req, res, next) => {
-  next(createError(404, 'The page you requested does not exist'));
-});
+// app.use((req, res, next) => {
+//   next(createError(404, 'The page you requested does not exist'));
+// });
 
 app.use((err, req, res, next) => {
   console.error(err);

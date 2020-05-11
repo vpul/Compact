@@ -9,7 +9,7 @@ const createWithAlias = async ({ alias, url }) => {
     }
     return createError(
       400,
-      `Alias ${alias} is unavailable. Please choose another one.`,
+      `Alias '${alias}' is unavailable. Please choose another one.`,
     );
   }
   const result = await Url.create({
